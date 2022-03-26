@@ -1,0 +1,14 @@
+input_dir: MarvelApp/Resources
+output_dir: MarvelApp/Generated/
+strings:
+  inputs: en.lproj
+  outputs:
+    - templateName: structured-swift5
+      output: Strings.swift
+xcassets:
+  inputs:
+    - Images.xcassets
+    - Colors.xcassets
+  outputs:
+    - templateName: swift5
+      output: Assets.swift

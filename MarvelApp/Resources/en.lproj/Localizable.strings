@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  MarvelApp
+
+  Created by Igor Zarubin on 26.03.2022.
+  
+*/
+
+"AvengerList.InitialLoadingFailed.Title" = "Oups, something went wrong!";
+"AvengerList.InitialLoadingFailed.Description" = "Our multiverse seems to have ceased to exist 😱\nOr maybe it's just a connection issue 🤔\nAnyway try it again!";
+"AvengerList.LoadingFailed.Text" = "Something went wrong 😔";
+"AvengerList.LoadingFailed.Action" = "Try again";
