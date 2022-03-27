@@ -10,3 +10,4 @@
 "AvengerList.InitialLoadingFailed.Description" = "Our multiverse seems to have ceased to exist 😱\nOr maybe it's just a connection issue 🤔\nAnyway try it again!";
 "AvengerList.LoadingFailed.Text" = "Something went wrong 😔";
 "AvengerList.LoadingFailed.Action" = "Try again";
+"AvengerList.Search.Hint" = "Search heroes";

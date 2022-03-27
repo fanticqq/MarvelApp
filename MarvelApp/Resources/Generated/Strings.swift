@@ -26,6 +26,10 @@ internal enum L10n {
       /// Something went wrong 😔
       internal static let text = L10n.tr("Localizable", "AvengerList.LoadingFailed.Text")
     }
+    internal enum Search {
+      /// Search heroes
+      internal static let hint = L10n.tr("Localizable", "AvengerList.Search.Hint")
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

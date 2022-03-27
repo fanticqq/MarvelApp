@@ -8,6 +8,7 @@
 import UIKit
 
 final class CharacterCell: UICollectionViewCell {
+    private static let imageSize = CGSize(width: 44, height: 44)
     private static let indicatorImage = UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate)
 
     private let avatarImageView = UIImageView().forAutoLayout()
@@ -25,9 +26,9 @@ final class CharacterCell: UICollectionViewCell {
         fatalError("Not implemented")
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.layer.cornerRadius = 16
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.avatarImageView.cancelImageDownload()
     }
 
     func configure(with displayItem: CharacterCellDisplayItem) {
@@ -38,11 +39,18 @@ final class CharacterCell: UICollectionViewCell {
 
 private extension CharacterCell {
     func configureUI() {
+        self.layer.cornerRadius = 16
         self.backgroundColor = Asset.Colors.accent.color
         self.nameLabel.textColor = Asset.Colors.textPrimary.color
         self.nameLabel.font = UIFont.systemFont(ofSize: 13)
+        
         self.indicatorImageView.image = CharacterCell.indicatorImage
         self.indicatorImageView.tintColor = Asset.Colors.textPrimary.color
+        
+        self.avatarImageView.clipsToBounds = true
+        self.avatarImageView.backgroundColor = Asset.Colors.textPrimary.color
+        self.avatarImageView.layer.cornerRadius = CharacterCell.imageSize.width / 2
+        
         self.contentView.addSubview(self.nameLabel)
         self.contentView.addSubview(self.avatarImageView)
         self.contentView.addSubview(self.indicatorImageView)
@@ -55,8 +63,8 @@ private extension CharacterCell {
                 equalTo: self.contentView.leadingAnchor,
                 constant: ViewSpecs.sideOffset
             ),
-            self.avatarImageView.heightAnchor.constraint(equalToConstant: 44),
-            self.avatarImageView.widthAnchor.constraint(equalToConstant: 44)
+            self.avatarImageView.heightAnchor.constraint(equalToConstant: CharacterCell.imageSize.height),
+            self.avatarImageView.widthAnchor.constraint(equalToConstant: CharacterCell.imageSize.width)
         ])
         NSLayoutConstraint.activate([
             self.nameLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),

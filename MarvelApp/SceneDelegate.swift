@@ -9,6 +9,7 @@ import UIKit
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
+    private var mainCoordinator: MainCoordinator?
 
     func scene(
         _ scene: UIScene,
@@ -18,11 +19,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else {
             return
         }
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.windowScene = windowScene
-        let listViewController = CharacterListAssembly.makeModule()
-        let navigationController = UINavigationController(rootViewController: listViewController)
-        window?.rootViewController = navigationController
-        window?.makeKeyAndVisible()
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.windowScene = windowScene
+        self.window = window
+        self.mainCoordinator = MainCoordinator(window: window)
+        self.mainCoordinator?.start()
     }
 }

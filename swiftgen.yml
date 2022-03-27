@@ -1,5 +1,5 @@
 input_dir: MarvelApp/Resources
-output_dir: MarvelApp/Generated/
+output_dir: MarvelApp/Resources/Generated/
 strings:
   inputs: en.lproj
   outputs:

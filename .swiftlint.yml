@@ -51,6 +51,7 @@ opt_in_rules:
     
 disabled_rules:
     - file_name
+    - trailing_whitespace
 
 cyclomatic_complexity:
     warning: 10

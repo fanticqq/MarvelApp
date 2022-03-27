@@ -8,7 +8,17 @@
 import Combine
 
 final class CharacterServiceImp: CharacterService {
-    func fetchCharaters(query: String?, offset: Int) -> AnyPublisher<[MarvelCharacter], Error> {
-        fatalError("Not implemented")
+    private let apiClient: APIClient
+    
+    init(apiClient: APIClient) {
+        self.apiClient = apiClient
+    }
+    
+    func fetchCharaters(query: String?, offset: UInt, limit: UInt) -> AnyPublisher<[MarvelCharacter], Error> {
+        let request = CharacterListRequest(limit: limit, offset: offset, query: query)
+        return self.apiClient
+            .send(request: request)
+            .map { $0.data.results }
+            .eraseToAnyPublisher()
     }
 }

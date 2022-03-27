@@ -21,6 +21,7 @@ final class CharacterListViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: self.makeLayout())
         view.backgroundColor = Asset.Colors.base.color
+        view.contentInset = UIEdgeInsets(top: ViewSpecs.sideOffset, left: 0, bottom: 0, right: 0)
         return view.forAutoLayout()
     }()
 
@@ -29,6 +30,11 @@ final class CharacterListViewController: UIViewController {
         indicator.color = Asset.Colors.accent.color
         indicator.hidesWhenStopped = true
         return indicator.forAutoLayout()
+    }()
+    
+    private lazy var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        return searchController
     }()
 
     private lazy var loadingFailedView = CharactersListLoadingFailedView().forAutoLayout()
@@ -49,6 +55,22 @@ final class CharacterListViewController: UIViewController {
         self.configure()
         self.viewModel.loadData()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.definesPresentationContext = true
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.definesPresentationContext = true
+    }
+}
+
+extension CharacterListViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        self.viewModel.searchCharacters(by: searchController.searchBar.text ?? "")
+    }
 }
 
 private extension CharacterListViewController {
@@ -59,9 +81,25 @@ private extension CharacterListViewController {
     }
 
     func configureUI() {
+        self.configureSearchUI()
+        
+        self.navigationItem.hidesSearchBarWhenScrolling = false
+        self.navigationItem.searchController = searchController
         self.view.addSubview(self.collectionView)
         self.view.addSubview(self.loadingIndicator)
         self.view.addSubview(self.loadingFailedView)
+    }
+    
+    func configureSearchUI() {
+        let searchBar = self.searchController.searchBar
+        searchBar.tintColor = Asset.Colors.accent.color
+        searchBar.searchBarStyle = .minimal
+        searchBar.searchTextField.leftView?.tintColor = Asset.Colors.accent.color
+        searchBar.searchTextField.textColor = Asset.Colors.textPrimary.color
+        searchBar.placeholder = L10n.AvengerList.Search.hint
+        
+        self.searchController.searchResultsUpdater = self
+        self.searchController.obscuresBackgroundDuringPresentation = false
     }
 
     func configureLayout() {
@@ -83,12 +121,14 @@ private extension CharacterListViewController {
 
     func configureSubscriptions() {
         self.viewModel.$displayItems
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] items in
                 self?.adapter.updateData(with: items)
             }
             .store(in: &self.subscriptions)
 
         self.viewModel.$loadingState
+            .receive(on: DispatchQueue.main)
             .map { loadingState in
                 loadingState != .initialLoading
             }
@@ -102,6 +142,7 @@ private extension CharacterListViewController {
             .store(in: &self.subscriptions)
 
         self.viewModel.$loadingState
+            .receive(on: DispatchQueue.main)
             .map { loadingState in
                 loadingState != .initialLoadingFailed
             }
@@ -111,6 +152,7 @@ private extension CharacterListViewController {
             .store(in: &self.subscriptions)
 
         self.viewModel.$loadingState
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 switch state {
                 case .partialLoading:

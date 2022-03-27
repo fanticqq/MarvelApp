@@ -9,5 +9,5 @@ import Foundation
 import Combine
 
 protocol CharacterService: AnyObject {
-    func fetchCharaters(query: String?, offset: Int) -> AnyPublisher<[MarvelCharacter], Error>
+    func fetchCharaters(query: String?, offset: UInt, limit: UInt) -> AnyPublisher<[MarvelCharacter], Error>
 }

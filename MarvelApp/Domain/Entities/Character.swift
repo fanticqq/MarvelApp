@@ -14,6 +14,7 @@ struct MarvelCharacter {
     let id: ID
     let name: String
     let description: String?
+    let thumbnail: Thumbnail?
 }
 
 extension MarvelCharacter: Hashable {
@@ -26,4 +27,4 @@ extension MarvelCharacter: Hashable {
     }
 }
 
-extension MarvelCharacter: Decodable {}
+extension MarvelCharacter: APIResponse {}
