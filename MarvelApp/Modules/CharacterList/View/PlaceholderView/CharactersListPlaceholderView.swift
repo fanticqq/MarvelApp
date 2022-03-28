@@ -1,5 +1,5 @@
 //
-//  CharactersListLoadingFailedView.swift
+//  CharactersListPlaceholderView.swift
 //  MarvelApp
 //
 //  Created by Igor Zarubin on 26.03.2022.
@@ -7,12 +7,12 @@
 
 import UIKit
 
-final class CharactersListLoadingFailedView: UICollectionReusableView {
-    var onRefreshPressed: (() -> Void)?
+final class CharactersListPlaceholderView: UIView {
+    var onActionTriggered: (() -> Void)?
 
     private lazy var titleLabel: UILabel = self.makeTitleLabel()
     private lazy var descriptionLabel: UILabel = self.makeDescriptionLabel()
-    private lazy var tryAgainButton: UIButton = self.makeTryAgainButton()
+    private lazy var actionButton: UIButton = self.makeActionButton()
     private let stackView = UIStackView().forAutoLayout()
 
     override init(frame: CGRect) {
@@ -24,9 +24,20 @@ final class CharactersListLoadingFailedView: UICollectionReusableView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func configure(with placeholder: CharactersListPlaceholder) {
+        self.titleLabel.text = placeholder.title
+        self.descriptionLabel.text = placeholder.description
+        if let action = placeholder.action {
+            self.actionButton.setTitle(action, for: .normal)
+            self.actionButton.isHidden = false
+        } else {
+            self.actionButton.isHidden = true            
+        }
+    }
 }
 
-private extension CharactersListLoadingFailedView {
+private extension CharactersListPlaceholderView {
     func configureUI() {
         self.backgroundColor = Asset.Colors.base.color
         self.stackView.axis = .vertical
@@ -34,7 +45,7 @@ private extension CharactersListLoadingFailedView {
         self.stackView.setCustomSpacing(20, after: self.titleLabel)
         self.stackView.addArrangedSubview(self.descriptionLabel)
         self.stackView.setCustomSpacing(40, after: self.descriptionLabel)
-        self.stackView.addArrangedSubview(self.tryAgainButton)
+        self.stackView.addArrangedSubview(self.actionButton)
         self.addSubview(self.stackView)
     }
 
@@ -54,15 +65,14 @@ private extension CharactersListLoadingFailedView {
         ])
     }
 
-    @objc func tryAgainButtonPressed() {
-        self.onRefreshPressed?()
+    @objc func actionButtonPressed() {
+        self.onActionTriggered?()
     }
 }
 
-extension CharactersListLoadingFailedView {
+extension CharactersListPlaceholderView {
     func makeTitleLabel() -> UILabel {
         let label = UILabel()
-        label.text = L10n.AvengerList.InitialLoadingFailed.title
         label.textColor = Asset.Colors.accent.color
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -72,7 +82,6 @@ extension CharactersListLoadingFailedView {
 
     func makeDescriptionLabel() -> UILabel {
         let label = UILabel()
-        label.text = L10n.AvengerList.InitialLoadingFailed.description
         label.textColor = Asset.Colors.accent.color
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -80,9 +89,8 @@ extension CharactersListLoadingFailedView {
         return label.forAutoLayout()
     }
 
-    func makeTryAgainButton() -> UIButton {
+    func makeActionButton() -> UIButton {
         let button = UIButton(type: .system)
-        button.setTitle(L10n.AvengerList.LoadingFailed.action, for: .normal)
         button.tintColor = Asset.Colors.accent.color
         button.layer.borderColor = Asset.Colors.accent.color.cgColor
         button.layer.borderWidth = 1
@@ -93,7 +101,7 @@ extension CharactersListLoadingFailedView {
             bottom: ViewSpecs.innerOffset,
             right: ViewSpecs.innerOffset
         )
-        button.addTarget(self, action: #selector(tryAgainButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(actionButtonPressed), for: .touchUpInside)
         return button.forAutoLayout()
     }
 }

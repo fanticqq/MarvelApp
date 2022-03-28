@@ -29,6 +29,19 @@ internal enum L10n {
     internal enum Search {
       /// Search heroes
       internal static let hint = L10n.tr("Localizable", "AvengerList.Search.Hint")
+      internal enum Empty {
+        /// Try to change your request somehow
+        internal static let description = L10n.tr("Localizable", "AvengerList.Search.Empty.Description")
+        /// Nothing found 🔍
+        internal static let title = L10n.tr("Localizable", "AvengerList.Search.Empty.Title")
+      }
+      internal enum Error {
+        /// Your search request lost in time and space.
+        /// Connection to universe seems to be failed
+        internal static let description = L10n.tr("Localizable", "AvengerList.Search.Error.Description")
+        /// No one can hears you request
+        internal static let title = L10n.tr("Localizable", "AvengerList.Search.Error.Title")
+      }
     }
   }
 }
