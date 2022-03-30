@@ -17,7 +17,7 @@ final class CharacterServiceMock: CharacterService {
             for _ in 0..<20 {
                 let uid = UUID().uuidString
                 let character = MarvelCharacter(
-                    id: MarvelCharacter.ID(abs(uid.hashValue)),
+                    id: ID(abs(uid.hashValue)),
                     name: uid,
                     description: nil,
                     thumbnail: nil

@@ -11,6 +11,11 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal enum L10n {
 
+  internal enum AvengerDetails {
+    /// All information about this profile has been lost
+    internal static let descriptionPlaceholder = L10n.tr("Localizable", "AvengerDetails.DescriptionPlaceholder")
+  }
+
   internal enum AvengerList {
     internal enum InitialLoadingFailed {
       /// Our multiverse seems to have ceased to exist 😱
@@ -19,12 +24,6 @@ internal enum L10n {
       internal static let description = L10n.tr("Localizable", "AvengerList.InitialLoadingFailed.Description")
       /// Oups, something went wrong!
       internal static let title = L10n.tr("Localizable", "AvengerList.InitialLoadingFailed.Title")
-    }
-    internal enum LoadingFailed {
-      /// Try again
-      internal static let action = L10n.tr("Localizable", "AvengerList.LoadingFailed.Action")
-      /// Something went wrong 😔
-      internal static let text = L10n.tr("Localizable", "AvengerList.LoadingFailed.Text")
     }
     internal enum Search {
       /// Search heroes
@@ -43,6 +42,13 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "AvengerList.Search.Error.Title")
       }
     }
+  }
+
+  internal enum LoadingFailed {
+    /// Try again
+    internal static let action = L10n.tr("Localizable", "LoadingFailed.Action")
+    /// Something went wrong 😔
+    internal static let text = L10n.tr("Localizable", "LoadingFailed.Text")
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

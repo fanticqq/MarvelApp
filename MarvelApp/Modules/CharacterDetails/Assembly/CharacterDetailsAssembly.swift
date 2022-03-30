@@ -10,7 +10,8 @@ import UIKit
 
 enum CharacterDetailsAssembly {
     static func makeModule(character: MarvelCharacter) -> UIViewController {
-        let viewModel = CharacterDetailsViewModel(character: character)
+        let service = ServiceLocator.instance.comicService
+        let viewModel = CharacterDetailsViewModel(character: character, service: service)
         let view = CharacterDetailsView(viewModel: viewModel)
         return UIHostingController(rootView: view)
     }

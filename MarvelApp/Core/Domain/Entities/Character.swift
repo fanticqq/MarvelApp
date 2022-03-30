@@ -8,9 +8,6 @@
 import Foundation
 
 struct MarvelCharacter {
-    // swiftlint:disable type_name
-    typealias ID = UInt
-
     let id: ID
     let name: String
     let description: String?

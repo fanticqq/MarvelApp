@@ -111,7 +111,7 @@ private extension CharacterListViewModel {
                 self?.placeholder = CharactersListPlaceholder(
                     title: L10n.AvengerList.InitialLoadingFailed.title,
                     description: L10n.AvengerList.InitialLoadingFailed.description,
-                    action: L10n.AvengerList.LoadingFailed.action
+                    action: L10n.LoadingFailed.action
                 )
             }, receiveValue: { [weak self] receivedCharacters in
                 guard let self = self else {
@@ -181,7 +181,7 @@ private extension CharacterListViewModel {
                     let placeholder = CharactersListPlaceholder(
                         title: L10n.AvengerList.Search.Error.title,
                         description: L10n.AvengerList.Search.Error.description,
-                        action: L10n.AvengerList.LoadingFailed.action
+                        action: L10n.LoadingFailed.action
                     )
                     self?.placeholder = placeholder
                 },

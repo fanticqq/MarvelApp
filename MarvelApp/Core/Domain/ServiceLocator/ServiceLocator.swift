@@ -28,5 +28,10 @@ final class ServiceLocator {
         return service
     }()
     
+    private(set) lazy var comicService: ComicService = {
+        let service = ComicServiceImp(apiClient: self.apiClient)
+        return service
+    }()
+    
     private init() {}
 }

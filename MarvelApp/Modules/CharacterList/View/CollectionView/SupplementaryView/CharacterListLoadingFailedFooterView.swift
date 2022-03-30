@@ -51,7 +51,7 @@ private extension CharacterListLoadingFailedFooterView {
 
     func makeTitleLabel() -> UILabel {
         let label = UILabel()
-        label.text = L10n.AvengerList.LoadingFailed.text
+        label.text = L10n.LoadingFailed.text
         label.textColor = Asset.Colors.accent.color
         label.numberOfLines = 2
         label.setContentHuggingPriority(.required, for: .horizontal)
@@ -62,7 +62,7 @@ private extension CharacterListLoadingFailedFooterView {
 
     func makeTryAgainButton() -> UIButton {
         let button = UIButton(type: .system)
-        button.setTitle(L10n.AvengerList.LoadingFailed.action, for: .normal)
+        button.setTitle(L10n.LoadingFailed.action, for: .normal)
         button.tintColor = Asset.Colors.accent.color
         button.layer.borderColor = Asset.Colors.accent.color.cgColor
         button.layer.borderWidth = 1
