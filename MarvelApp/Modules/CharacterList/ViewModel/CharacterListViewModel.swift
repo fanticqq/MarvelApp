@@ -8,11 +8,17 @@
 import Combine
 import Foundation
 
-final class CharacterListViewModel {
+protocol CharacterListModuleOutput: AnyObject {
+    var onShowCharacterDetails: ((MarvelCharacter) -> Void)? { get set }
+}
+
+final class CharacterListViewModel: CharacterListModuleOutput {
     private enum Mode {
         case fetching
         case searching
     }
+    
+    var onShowCharacterDetails: ((MarvelCharacter) -> Void)?
     
     @Published private(set) var displayItems = [CharacterCellDisplayItem]()
     @Published private(set) var paginationState: CharacterListPaginationState = .none
@@ -25,7 +31,18 @@ final class CharacterListViewModel {
     private let searchTextPublisher = CurrentValueSubject<String?, Never>(nil)
     
     private var mode: Mode = .fetching
-    private var characters = [MarvelCharacter]()
+    
+    private var fetchedCharacters = [MarvelCharacter]()
+    private var searchResults = [MarvelCharacter]()
+    private var characters: [MarvelCharacter] {
+        switch self.mode {
+        case .fetching:
+            return fetchedCharacters
+        case .searching:
+            return searchResults
+        }
+    }
+    
     private var subscriptions = Set<AnyCancellable>()
 
     init(service: CharacterService) {
@@ -69,7 +86,15 @@ final class CharacterListViewModel {
         self.placeholder = nil
         self.mode = .fetching
         self.searchTextPublisher.send(nil)
-        self.displayData(characters: self.characters)
+        self.displayData()
+    }
+    
+    func select(characterAt index: Int) {
+        guard index < self.characters.endIndex else {
+            assertionFailure("Unexpected selected character index: \(index)")
+            return
+        }
+        self.onShowCharacterDetails?(self.characters[index])
     }
 }
 
@@ -92,9 +117,9 @@ private extension CharacterListViewModel {
                 guard let self = self else {
                     return
                 }
-                self.characters = receivedCharacters
+                self.fetchedCharacters = receivedCharacters
                 if self.mode == .fetching {
-                    self.displayData(characters: self.characters)
+                    self.displayData()
                 }
             })
             .store(in: &subscriptions)
@@ -103,7 +128,7 @@ private extension CharacterListViewModel {
     func fetchNextPage() {
         self.paginationState = .loadingNextPage
         self.service
-            .fetchCharaters(query: nil, offset: UInt(self.characters.count), limit: self.charactersLimit)
+            .fetchCharaters(query: nil, offset: UInt(self.fetchedCharacters.count), limit: self.charactersLimit)
             .sink(receiveCompletion: { [weak self] completion in
                 guard case .failure = completion else {
                     self?.paginationState = .none
@@ -114,16 +139,16 @@ private extension CharacterListViewModel {
                 guard let self = self else {
                     return
                 }
-                self.characters.append(contentsOf: receivedCharacters)
+                self.fetchedCharacters.append(contentsOf: receivedCharacters)
                 if self.mode == .fetching {
-                    self.displayData(characters: self.characters)
+                    self.displayData()
                 }
             })
             .store(in: &subscriptions)
     }
 
-    func displayData(characters: [MarvelCharacter]) {
-        let displayItems = characters.map {
+    func displayData() {
+        let displayItems = self.characters.map {
             CharacterCellDisplayItem(name: $0.name, imageURL: $0.thumbnail?.url(for: .square(.medium)))
         }
         self.isLoading = false
@@ -133,6 +158,8 @@ private extension CharacterListViewModel {
     func observeSearchQuery() {
         let searchResultsLimit: UInt = self.charactersLimit
         self.searchTextPublisher
+            .removeDuplicates()
+            .eraseToAnyPublisher()
             .handleEvents(receiveOutput: { [weak self] _ in
                 self?.placeholder = nil
                 self?.isLoading = true
@@ -163,6 +190,7 @@ private extension CharacterListViewModel {
                         return
                     }
                     self?.isLoading = false
+                    self?.searchResults = characters
                     if characters.isEmpty {
                         let placeholder = CharactersListPlaceholder(
                             title: L10n.AvengerList.Search.Empty.title,
@@ -171,7 +199,7 @@ private extension CharacterListViewModel {
                         )
                         self?.placeholder = placeholder
                     } else {
-                        self?.displayData(characters: characters)
+                        self?.displayData()
                     }
                 }
             )

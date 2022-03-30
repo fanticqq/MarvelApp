@@ -19,7 +19,8 @@ final class CharacterListViewController: UIViewController {
     private lazy var adapter = CharactersListAdapter(collectionView: self.collectionView)
 
     private lazy var collectionView: UICollectionView = {
-        let view = UICollectionView(frame: .zero, collectionViewLayout: self.makeLayout())
+        let layout = CharacterListLayoutBuilder.makeLayout()
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = Asset.Colors.base.color
         view.contentInset = UIEdgeInsets(top: ViewSpecs.sideOffset, left: 0, bottom: 0, right: 0)
         return view.forAutoLayout()
@@ -82,6 +83,7 @@ private extension CharacterListViewController {
     func configure() {
         self.configureUI()
         self.configureSubscriptions()
+        self.configureHandlers()
         self.configureLayout()
     }
 
@@ -122,6 +124,21 @@ private extension CharacterListViewController {
             self.placeholderView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             self.placeholderView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
         ])
+    }
+    
+    func configureHandlers() {
+        self.adapter.onLoadNextPage = { [weak self] in
+            self?.viewModel.loadNextPage()
+        }
+        self.adapter.onRetry = { [weak self] in
+            self?.viewModel.retryNextPage()
+        }
+        self.placeholderView.onActionTriggered = { [weak self] in
+            self?.viewModel.retry()
+        }
+        self.adapter.onSelectItemAtIndexPath = { [weak self] indexPath in
+            self?.viewModel.select(characterAt: indexPath.item)            
+        }
     }
 
     func configureSubscriptions() {
@@ -180,54 +197,5 @@ private extension CharacterListViewController {
                 }
             }
             .store(in: &self.subscriptions)
-
-        self.adapter.onLoadNextPage = { [weak self] in
-            self?.viewModel.loadNextPage()
-        }
-        self.adapter.onRetry = { [weak self] in
-            self?.viewModel.retryNextPage()
-        }
-        self.placeholderView.onActionTriggered = { [weak self] in
-            self?.viewModel.retry()
-        }
-    }
-}
-
-extension CharacterListViewController {
-    func makeLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = .init(
-            top: 0,
-            leading: ViewSpecs.sideOffset,
-            bottom: 0,
-            trailing: ViewSpecs.sideOffset
-        )
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(64)
-        )
-        let group = NSCollectionLayoutGroup.horizontal(
-            layoutSize: groupSize,
-            subitems: [item]
-        )
-        let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 8
-
-        let footerSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(100.0)
-        )
-        let footer = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: footerSize,
-            elementKind: UICollectionView.elementKindSectionFooter,
-            alignment: .bottom
-        )
-        section.boundarySupplementaryItems = [footer]
-
-        return UICollectionViewCompositionalLayout(section: section)
     }
 }

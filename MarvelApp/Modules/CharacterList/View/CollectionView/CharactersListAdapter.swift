@@ -13,6 +13,7 @@ final class CharactersListAdapter: NSObject {
 
     var onLoadNextPage: (() -> Void)?
     var onRetry: (() -> Void)?
+    var onSelectItemAtIndexPath: ((IndexPath) -> Void)?
 
     var footer: Footer = .empty {
         didSet {
@@ -68,6 +69,10 @@ extension CharactersListAdapter: UICollectionViewDelegate {
             return
         }
         self.onLoadNextPage?()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.onSelectItemAtIndexPath?(indexPath)
     }
 }
 

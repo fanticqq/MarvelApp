@@ -8,10 +8,12 @@
 import Foundation
 import UIKit
 
+typealias CharacterListModule = (view: UIViewController, output: CharacterListModuleOutput)
+
 enum CharacterListAssembly {
-    static func makeModule() -> UIViewController {
+    static func makeModule() -> CharacterListModule {
         let viewModel = CharacterListViewModel(service: ServiceLocator.instance.characterService)
         let viewController = CharacterListViewController(viewModel: viewModel)
-        return viewController
+        return CharacterListModule(view: viewController, output: viewModel)
     }
 }

@@ -9,29 +9,39 @@ import UIKit
 
 final class MainCoordinator {
     private let window: UIWindow
+    private let navigationController: UINavigationController
     
     init(window: UIWindow) {
         self.window = window
+        self.navigationController = UINavigationController()
+        self.configureNavigationControllerAppearence()
     }
     
     func start() {
-        let listViewController = CharacterListAssembly.makeModule()
-        let navigationController = UINavigationController(rootViewController: listViewController)
-        self.configureAppearence(for: navigationController)
+        let characterListModule = CharacterListAssembly.makeModule()
+        characterListModule.output.onShowCharacterDetails = { [weak self] character in
+            self?.showCharacterDetails(for: character)
+        }
+        self.navigationController.setViewControllers([characterListModule.view], animated: false)
         self.window.rootViewController = navigationController
         self.window.makeKeyAndVisible()
     }
 }
 
 private extension MainCoordinator {
-    func configureAppearence(for navigationController: UINavigationController) {
+    func showCharacterDetails(for character: MarvelCharacter) {
+        let view = CharacterDetailsAssembly.makeModule(character: character)
+        self.navigationController.pushViewController(view, animated: true)
+    }
+    
+    func configureNavigationControllerAppearence() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = Asset.Colors.foreground.color
         appearance.shadowColor = Asset.Colors.foreground.color
 
-        navigationController.navigationBar.tintColor = Asset.Colors.accent.color
-        navigationController.navigationBar.standardAppearance = appearance
-        navigationController.navigationBar.scrollEdgeAppearance = appearance
+        self.navigationController.navigationBar.tintColor = Asset.Colors.accent.color
+        self.navigationController.navigationBar.standardAppearance = appearance
+        self.navigationController.navigationBar.scrollEdgeAppearance = appearance
     }
 }
