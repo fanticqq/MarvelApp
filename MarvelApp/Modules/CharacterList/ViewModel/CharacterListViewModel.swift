@@ -131,7 +131,6 @@ private extension CharacterListViewModel {
             .fetchCharaters(query: nil, offset: UInt(self.fetchedCharacters.count), limit: self.charactersLimit)
             .sink(receiveCompletion: { [weak self] completion in
                 guard case .failure = completion else {
-                    self?.paginationState = .none
                     return
                 }
                 self?.paginationState = .loadingNextPageFailed
@@ -139,6 +138,7 @@ private extension CharacterListViewModel {
                 guard let self = self else {
                     return
                 }
+                self.paginationState = .none
                 self.fetchedCharacters.append(contentsOf: receivedCharacters)
                 if self.mode == .fetching {
                     self.displayData()
@@ -158,6 +158,7 @@ private extension CharacterListViewModel {
     func observeSearchQuery() {
         let searchResultsLimit: UInt = self.charactersLimit
         self.searchTextPublisher
+            .dropFirst()
             .removeDuplicates()
             .eraseToAnyPublisher()
             .handleEvents(receiveOutput: { [weak self] _ in
