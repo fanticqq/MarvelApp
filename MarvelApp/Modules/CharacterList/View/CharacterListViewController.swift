@@ -17,6 +17,8 @@ final class CharacterListViewController: UIViewController {
     private var subscriptions = Set<AnyCancellable>()
 
     private lazy var adapter = CharactersListAdapter(collectionView: self.collectionView)
+    
+    private let titleImageView = UIImageView(image: Asset.Images.marvelLogo.image).forAutoLayout()
 
     private lazy var collectionView: UICollectionView = {
         let layout = CharacterListLayoutBuilder.makeLayout()
@@ -91,6 +93,9 @@ private extension CharacterListViewController {
         self.configureSearchUI()
         
         self.navigationItem.hidesSearchBarWhenScrolling = false
+        self.navigationItem.titleView = self.titleImageView
+        self.titleImageView.contentMode = .scaleAspectFit
+
         self.view.addSubview(self.collectionView)
         self.view.addSubview(self.loadingIndicator)
         self.view.addSubview(self.placeholderView)
@@ -110,6 +115,10 @@ private extension CharacterListViewController {
     }
 
     func configureLayout() {
+        NSLayoutConstraint.activate([
+            self.titleImageView.heightAnchor.constraint(equalToConstant: 204),
+            self.titleImageView.widthAnchor.constraint(equalToConstant: 70)
+        ])
         NSLayoutConstraint.activate([
             self.collectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             self.collectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
