@@ -35,13 +35,7 @@ private extension MainCoordinator {
     }
     
     func configureNavigationControllerAppearence() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = Asset.Colors.foreground.color
-        appearance.shadowColor = Asset.Colors.foreground.color
-
         self.navigationController.navigationBar.tintColor = Asset.Colors.accent.color
-        self.navigationController.navigationBar.standardAppearance = appearance
-        self.navigationController.navigationBar.scrollEdgeAppearance = appearance
+        self.navigationController.navigationBar.barStyle = .black
     }
 }
